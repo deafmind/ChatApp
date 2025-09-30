@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:17.6
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=admin@12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=chatapp
+  adminer:
+        image: adminer:latest
+        environment: 
+            ADMINER_DEFAULT_SERVER: postgres
+            ADMINER_DESIGN: galkaev
+        ports: 
+          - 8080:8080
