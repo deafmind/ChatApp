@@ -1,0 +1,84 @@
+:root {
+  --background-deep-purple: #210535;
+  --sidebar-rich-purple: #430d4b;
+  --highlight-medium-purple: #7b337d;
+  --accent-soft-pink: #c874b2;
+  --text-light-pink: #f5d5e0;
+
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: var(--text-light-pink);
+  background-color: var(--background-deep-purple);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Add some global styles for forms and buttons */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--highlight-medium-purple);
+  color: var(--text-light-pink);
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+button:hover {
+  background-color: var(--accent-soft-pink);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+input {
+  background-color: var(--sidebar-rich-purple);
+  border: 1px solid var(--highlight-medium-purple);
+  color: var(--text-light-pink);
+  padding: 0.8em;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+    color: #c874b2a6;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sidebar-rich-purple);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--highlight-medium-purple);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-soft-pink);
+}

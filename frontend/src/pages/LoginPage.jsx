@@ -1,109 +1,80 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Paper, 
-  TextField, 
-  Button, 
-  Typography, 
-  Box, 
-  Alert,
-  Link
-} from '@mui/material';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+const LoginContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  .form-box {
+    background-color: var(--sidebar-rich-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  h2 {
+    color: var(--text-light-pink);
+    margin-bottom: 1rem;
+  }
+  .link {
+    color: var(--accent-soft-pink);
+    text-decoration: none;
+    align-self: center;
+    &:hover {
+        text-decoration: underline;
+    }
+  }
+`;
+
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-
-    const result = await login(formData);
-    
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
+    try {
+      await login(username, password);
+      navigate('/chat');
+    } catch (err) {
+      setError('Failed to log in. Please check your credentials.');
     }
-    
-    setLoading(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Typography component="h1" variant="h5" align="center">
-            Sign in
-          </Typography>
-          
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username or Email"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              value={formData.username}
-              onChange={handleChange}
+    <LoginContainer>
+        <form onSubmit={handleSubmit} className="form-box">
+            <h2>Login to Your Account</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <input
+                type="email" // Your backend uses email as username
+                placeholder="Email"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-            
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Box>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+            <button type="submit">Login</button>
+            <Link to="/register" className='link'>Don't have an account? Register</Link>
+        </form>
+    </LoginContainer>
   );
 };
 

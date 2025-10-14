@@ -1,159 +1,82 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Paper, 
-  TextField, 
-  Button, 
-  Typography, 
-  Box, 
-  Alert,
-  Link
-} from '@mui/material';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+const LoginContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  .form-box {
+    background-color: var(--sidebar-rich-purple);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  h2 {
+    color: var(--text-light-pink);
+    margin-bottom: 1rem;
+  }
+  .link {
+    color: var(--accent-soft-pink);
+    text-decoration: none;
+    align-self: center;
+    &:hover {
+        text-decoration: underline;
+    }
+  }
+`;
+
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    first_name: '',
-    last_name: '',
-    password1: '',
-    password2: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
   const { register } = useAuth();
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-
-    const result = await register(formData);
-    
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
+    try {
+      await login(username, password);
+      navigate('/chat');
+    } catch (err) {
+      setError('Failed to log in. Please check your credentials.');
     }
-    
-    setLoading(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Typography component="h1" variant="h5" align="center">
-            Sign up
-          </Typography>
-          
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              value={formData.username}
-              onChange={handleChange}
+    <RegisterContainer>
+        <form onSubmit={handleSubmit} className="form-box">
+            <h2>Create a New Account</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="first_name"
-              label="First Name"
-              name="first_name"
-              autoComplete="given-name"
-              value={formData.first_name}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="last_name"
-              label="Last Name"
-              name="last_name"
-              autoComplete="family-name"
-              value={formData.last_name}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password1"
-              label="Password"
-              type="password"
-              id="password1"
-              autoComplete="new-password"
-              value={formData.password1}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password2"
-              label="Confirm Password"
-              type="password"
-              id="password2"
-              autoComplete="new-password"
-              value={formData.password2}
-              onChange={handleChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Creating account...' : 'Sign Up'}
-            </Button>
-            
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Link href="/login" variant="body2">
-                {"Already have an account? Sign in"}
-              </Link>
-            </Box>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+            <button type="submit">Register</button>
+            <Link to="/login" className="link">Already have an account? Login</Link>
+        </form>
+    </RegisterContainer>
   );
 };
 
 export default RegisterPage;
+// NOTE: You might need to install styled-components: npm install styled-components
