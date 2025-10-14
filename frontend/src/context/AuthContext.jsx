@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import apiClient from '../api/axiosConfig';
-import { jwtDecode } from 'jwt-decode'; // You might need to install this: npm install jwt-decode
+// import { jwtDecode } from 'jwt-decode'; 
 
 const AuthContext = createContext(null);
 
@@ -15,27 +15,40 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (tokens?.access) {
-      const decodedUser = jwtDecode(tokens.access);
-      setUser({ username: decodedUser.username, id: decodedUser.user_id });
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
+  
+      try {
+        // setUser({ username: username, id: decodedUser.user_id });
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
+      } catch (error) {
+        console.error('Invalid access token:', error);
+        setUser(null);
+        setTokens(null);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      }
     }
     setLoading(false);
   }, [tokens]);
 
-  const login = async (username, password) => {
+
+  const login = async (username, password) => { // <--- The essential 'async' keyword is here
     try {
       const response = await apiClient.post('/auth/login/', { username, password });
       const { access_token, refresh_token } = response.data;
       localStorage.setItem('accessToken', access_token);
       localStorage.setItem('refreshToken', refresh_token);
       setTokens({ access: access_token, refresh: refresh_token });
-      const decodedUser = jwtDecode(access_token);
-      setUser({ username: decodedUser.username, id: decodedUser.user_id });
+
+
+    //   const decodedUser = jwtDecode(access_token);
+      setUser({ username: username});
     } catch (error) {
       console.error('Login failed:', error);
+
       throw error;
     }
   };
+
 
   const logout = () => {
     setUser(null);

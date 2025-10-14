@@ -8,20 +8,21 @@ from rest_framework import status
 
 import requests
 from oauth2_provider.models import Application
-from oauth2_provider.contrib.rest_framework import TokenHasScope, OAuth2Authentication
-import dotenv
-import os
-from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from rest_framework.decorators import permission_classes
 from .forms import UserRegistrationForm
-from rest_framework.views import APIView
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 import requests
 import os
 import dotenv
+
+
+
+dotenv.load_dotenv()
+
 User = get_user_model()
 
 # Authentication Views
@@ -54,8 +55,10 @@ class LoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(username=username, password=password)
+
         if user is not None:
             try:
+                print('hi')
                 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env')
                 dotenv.load_dotenv(dotenv_path=dotenv_path)
                 client_id = os.getenv("ID")
@@ -67,8 +70,8 @@ class LoginView(APIView):
                     'username': username,
                     'password': password,
                 }
+                
                 response = requests.post(token_url, data=data, auth=(client_id, client_secret))
-
                 if response.status_code == 200:
                     
                     tokens = response.json()
@@ -95,7 +98,7 @@ class LogoutView(APIView):
             client_id = os.getenv("ID")
             client_secret = os.getenv("SECRET")
             base_url = os.getenv("BASE_URL")
-            token_url = f'{base_url}/o/revoke_token/'
+            token_url = f'{base_url}/oauth/revoke_token/'
             data = {
                 'token': access_token,
                 'client_id': client_id,
@@ -112,14 +115,6 @@ class LogoutView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-import requests
-import os
-import dotenv
 
 class RefreshTokenView(APIView):
     permission_classes = [AllowAny]
@@ -146,7 +141,7 @@ class RefreshTokenView(APIView):
                 'client_secret': client_secret,
                 'refresh_token': refresh_token,
             }
-            token_url = f'{base_url}/o/token/'
+            token_url = f'{base_url}/oauth/token/'
             response = requests.post(token_url, data=payload)
             response.raise_for_status()
 

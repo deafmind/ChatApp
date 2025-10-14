@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$oba4&j)a+81a-mw=pc_2h#lq80thq$hn%ppslwxajpsbkt+)*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -165,11 +165,11 @@ OAUTH2_PROVIDER = {
 }
 
 # Social Auth Configuration (for OAuth2)
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.github.GithubOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.google.GoogleOAuth2',
+#     'social_core.backends.github.GithubOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
 # OAuth2 Settings
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
@@ -188,8 +188,8 @@ AUTH_USER_MODEL = 'authentication.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
+         
+    ], 
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -197,6 +197,18 @@ REST_FRAMEWORK = {
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React frontend (we have to change this in production for container IP)
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # React frontend (we have to change this in production for container IP)
+    "http://127.0.0.1:5173",
 ]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_CREDENTIALS = True

@@ -46,7 +46,8 @@ const LoginPage = () => {
     setError('');
     try {
       await login(username, password);
-      navigate('/chat');
+      console.log('Login successful');
+      navigate('/chat/');
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');
     }
