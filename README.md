@@ -1,4 +1,3 @@
-````markdown
 # Secure Real-Time Chat Application
 
 This is a full-stack, real-time chat application built with a **Django** backend and a **React** frontend. It features a robust OAuth2 authentication system, automatic database-level message encryption, and a live monitoring dashboard to visualize the encrypted data flow.
@@ -148,4 +147,4 @@ You will need two terminals to run the backend and frontend servers.
 
 ### WebSockets
 * `ws/chat/<slug>/`: WebSocket endpoint for real-time messages in a room.
-````         
+
